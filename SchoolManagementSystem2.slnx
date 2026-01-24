@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="SchoolProject2/SchoolManagementSystem2.csproj" />
+  <Project Path="SMS.Models/SMS.Models.csproj" />
+  <Project Path="SMS.Repositories/SMS.Repositories.csproj" />
+  <Project Path="SMS.Services/SMS.Services.csproj" />
+  <Project Path="SMS.Utilities/SMS.Utilities.csproj" />
+  <Project Path="SMS.ViewModels/SMS.ViewModels.csproj" />
+</Solution>

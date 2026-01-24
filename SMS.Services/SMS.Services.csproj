@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.23" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SMS.Models\SMS.Models.csproj" />
+    <ProjectReference Include="..\SMS.Repositories\SMS.Repositories.csproj" />
+    <ProjectReference Include="..\SMS.Utilities\SMS.Utilities.csproj" />
+    <ProjectReference Include="..\SMS.ViewModels\SMS.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
