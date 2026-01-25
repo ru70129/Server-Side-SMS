@@ -1,0 +1,43 @@
+﻿@using SMS.Utilities;
+@model PagedResult<SMS.ViewModels.GradeViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="AddGrade">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey*/})|
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey*/})|
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey*/})|
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

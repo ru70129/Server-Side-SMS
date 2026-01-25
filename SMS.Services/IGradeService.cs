@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SMS.Services
 {
-    internal interface IGradeService
+    public interface IGradeService
     {
         Task Add(CreateGradeViewModel vm);
         int AddGradeWithStudent(GradeViewModel grade, int sessionId, List<int> StudentList);
@@ -18,7 +18,7 @@ namespace SMS.Services
 
         IEnumerable<GradeViewModel> GetAll();
 
-        GradeViewModel GetById(int id);
+        GradeViewModel GetById(int gradeId);
     }
 
 }

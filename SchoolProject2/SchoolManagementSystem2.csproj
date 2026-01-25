@@ -30,8 +30,4 @@
     <ProjectReference Include="..\SMS.ViewModels\SMS.ViewModels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

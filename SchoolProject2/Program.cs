@@ -26,6 +26,8 @@ builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IStudentService, StudentService >();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IGradeService, GradeService>();
 
 // MVC
 builder.Services.AddControllersWithViews();

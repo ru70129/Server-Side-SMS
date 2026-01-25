@@ -11,7 +11,7 @@ namespace SMS.ViewModels
     {
         public string Name { get; set; }
 
-        public Grade Convert()
+        public Grade Convert(CreateGradeViewModel vm)
         {
             return new Grade { Name = this.Name };
         }
