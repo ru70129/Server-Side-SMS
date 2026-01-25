@@ -22,11 +22,15 @@ namespace SMS.Repositories
 
         public DbSet<Teacher> Teachers { get; set; }
 
+        public DbSet<Subject> Subjects { get; set; }
+
         public DbSet<Session> YearlySessions { get; set; }
 
         public DbSet<Grade> Grades { get; set; }
 
         public DbSet<Enroll> Enroll { get; set; }
+
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -1,9 +1,5 @@
 ﻿using SMS.Utilities;
 using SMS.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SMS.Services
@@ -11,10 +7,10 @@ namespace SMS.Services
     public interface IStudentService
     {
         Task AddStudent(CreateStudentViewModel student);
-
-        PagedResult<StudentViewModel> GetAll(int pageNumber, int pageSize);
-
+        Task UpdateStudent(StudentViewModel student);
+        Task DeleteStudent(int id);
+        StudentViewModel GetById(int id);
+        PagedResult<StudentViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true);
         int GetAllStudents();
-
     }
 }

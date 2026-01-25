@@ -1,4 +1,4 @@
-﻿using SMS.Models;
+using SMS.Models;
 using SMS.Repositories;
 using SMS.Utilities;
 using SMS.ViewModels;
@@ -12,13 +12,13 @@ using System.Text.Json;
 
 namespace SMS.Services
 {
-    public class StudentService : IStudentService
+    public class TeacherService : ITeacherService
     {
         private IUnitOfWork _unitOfWork;
         private UserManager<ApplicationUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
 
-        public StudentService(IUnitOfWork unitOfWork,
+        public TeacherService(IUnitOfWork unitOfWork,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
@@ -27,108 +27,112 @@ namespace SMS.Services
             _roleManager = roleManager;
         }
 
-        public async Task AddStudent(CreateStudentViewModel vm)
+        public async Task AddTeacher(CreateTeacherViewModel vm)
         {
-            var student = new Student
+            var teacher = new Teacher
             {
                 FirstName = vm.FirstName,
                 LastName = vm.LastName,
                 DOB = vm.DOB,
-                DateOfJoin = vm.DateOfJoin,
+                DateofJoin = vm.DateofJoin,
                 KeyId = vm.KeyId,
+                Qualification = vm.Qualification,
+                YearOfEx = vm.YearOfEx,
                 IsActive = true,
                 CreatedBy = vm.CreatedBy,
                 CreatedAt = DateTime.Now
             };
 
-            _unitOfWork.GenericRepository<Student>().Add(student);
+            _unitOfWork.GenericRepository<Teacher>().Add(teacher);
             await _unitOfWork.SaveAsync();
 
             // Audit log
             var audit = new AuditLog
             {
                 Action = "CREATE",
-                EntityName = "Student",
-                EntityId = student.Id,
-                NewValues = JsonSerializer.Serialize(student),
+                EntityName = "Teacher",
+                EntityId = teacher.Id,
+                NewValues = JsonSerializer.Serialize(teacher),
                 UserId = vm.CreatedBy
             };
             _unitOfWork.GenericRepository<AuditLog>().Add(audit);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task UpdateStudent(StudentViewModel vm)
+        public async Task UpdateTeacher(TeacherViewModel vm)
         {
-            var student = _unitOfWork.GenericRepository<Student>().GetById(vm.Id);
-            if (student == null) return;
+            var teacher = _unitOfWork.GenericRepository<Teacher>().GetById(vm.Id);
+            if (teacher == null) return;
 
-            var oldValues = JsonSerializer.Serialize(student);
+            var oldValues = JsonSerializer.Serialize(teacher);
 
-            student.FirstName = vm.FirstName;
-            student.LastName = vm.LastName;
-            student.DOB = vm.DOB;
-            student.DateOfJoin = vm.DateOfJoin;
-            student.KeyId = vm.KeyId;
-            student.UpdatedBy = vm.UpdatedBy;
-            student.UpdatedAt = DateTime.Now;
+            teacher.FirstName = vm.FirstName;
+            teacher.LastName = vm.LastName;
+            teacher.DOB = vm.DOB;
+            teacher.DateofJoin = vm.DateofJoin;
+            teacher.KeyId = vm.KeyId;
+            teacher.Qualification = vm.Qualification;
+            teacher.YearOfEx = vm.YearOfEx;
+            teacher.UpdatedBy = vm.UpdatedBy;
+            teacher.UpdatedAt = DateTime.Now;
 
-            _unitOfWork.GenericRepository<Student>().Update(student);
+            _unitOfWork.GenericRepository<Teacher>().Update(teacher);
             await _unitOfWork.SaveAsync();
 
             // Audit log
             var audit = new AuditLog
             {
                 Action = "UPDATE",
-                EntityName = "Student",
-                EntityId = student.Id,
+                EntityName = "Teacher",
+                EntityId = teacher.Id,
                 OldValues = oldValues,
-                NewValues = JsonSerializer.Serialize(student),
+                NewValues = JsonSerializer.Serialize(teacher),
                 UserId = vm.UpdatedBy
             };
             _unitOfWork.GenericRepository<AuditLog>().Add(audit);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task DeleteStudent(int id)
+        public async Task DeleteTeacher(int id)
         {
-            var student = _unitOfWork.GenericRepository<Student>().GetById(id);
-            if (student == null) return;
+            var teacher = _unitOfWork.GenericRepository<Teacher>().GetById(id);
+            if (teacher == null) return;
 
-            var oldValues = JsonSerializer.Serialize(student);
+            var oldValues = JsonSerializer.Serialize(teacher);
 
-            _unitOfWork.GenericRepository<Student>().Delete(student);
+            _unitOfWork.GenericRepository<Teacher>().Delete(teacher);
             await _unitOfWork.SaveAsync();
 
             // Audit log
             var audit = new AuditLog
             {
                 Action = "DELETE",
-                EntityName = "Student",
+                EntityName = "Teacher",
                 EntityId = id,
                 OldValues = oldValues,
-                UserId = "System"
+                UserId = "System" // or get current user
             };
             _unitOfWork.GenericRepository<AuditLog>().Add(audit);
             await _unitOfWork.SaveAsync();
         }
 
-        public StudentViewModel GetById(int id)
+        public TeacherViewModel GetById(int id)
         {
-            var student = _unitOfWork.GenericRepository<Student>().GetById(id);
-            return student == null ? null : new StudentViewModel(student);
+            var teacher = _unitOfWork.GenericRepository<Teacher>().GetById(id);
+            return teacher == null ? null : new TeacherViewModel(teacher);
         }
 
-        public PagedResult<StudentViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true)
+        public PagedResult<TeacherViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true)
         {
             int totalCount = 0;
-            List<StudentViewModel> vmList = new List<StudentViewModel>();
+            List<TeacherViewModel> vmList = new List<TeacherViewModel>();
             try
             {
-                var query = _unitOfWork.GenericRepository<Student>().GetAll().Where(s => s.IsActive == isActive);
+                var query = _unitOfWork.GenericRepository<Teacher>().GetAll().Where(t => t.IsActive == isActive);
 
                 if (!string.IsNullOrEmpty(search))
                 {
-                    query = query.Where(s => s.FirstName.Contains(search) || s.LastName.Contains(search) || s.KeyId.Contains(search));
+                    query = query.Where(t => t.FirstName.Contains(search) || t.LastName.Contains(search) || t.KeyId.Contains(search));
                 }
 
                 if (!string.IsNullOrEmpty(sortBy))
@@ -136,22 +140,22 @@ namespace SMS.Services
                     switch (sortBy.ToLower())
                     {
                         case "firstname":
-                            query = query.OrderBy(s => s.FirstName);
+                            query = query.OrderBy(t => t.FirstName);
                             break;
                         case "lastname":
-                            query = query.OrderBy(s => s.LastName);
+                            query = query.OrderBy(t => t.LastName);
                             break;
                         case "dob":
-                            query = query.OrderBy(s => s.DOB);
+                            query = query.OrderBy(t => t.DOB);
                             break;
                         default:
-                            query = query.OrderBy(s => s.Id);
+                            query = query.OrderBy(t => t.Id);
                             break;
                     }
                 }
                 else
                 {
-                    query = query.OrderBy(s => s.Id);
+                    query = query.OrderBy(t => t.Id);
                 }
 
                 totalCount = query.Count();
@@ -159,7 +163,7 @@ namespace SMS.Services
                 vmList = ConvertModelToViewModelList(modelList);
             }
             catch (Exception ex) { throw; }
-            var result = new PagedResult<StudentViewModel>
+            var result = new PagedResult<TeacherViewModel>
             {
                 Data = vmList,
                 TotalItems = totalCount,
@@ -169,15 +173,15 @@ namespace SMS.Services
             return result;
         }
 
-        public int GetAllStudents()
+        public int GetAllTeachers()
         {
-            var totalCount = _unitOfWork.GenericRepository<Student>().GetAll().Count();
+            var totalCount = _unitOfWork.GenericRepository<Teacher>().GetAll().Count();
             return totalCount;
         }
 
-        private List<StudentViewModel> ConvertModelToViewModelList(List<Student> modelList)
+        private List<TeacherViewModel> ConvertModelToViewModelList(List<Teacher> modelList)
         {
-            return modelList.Select(x => new StudentViewModel(x)).ToList();
+            return modelList.Select(x => new TeacherViewModel(x)).ToList();
         }
     }
 }

@@ -45,7 +45,10 @@ namespace SMS.Repositories
                 _context.SaveChanges();
             }
 
-
+            public async Task SaveAsync()
+            {
+                await _context.SaveChangesAsync();
+            }
         }
 
     

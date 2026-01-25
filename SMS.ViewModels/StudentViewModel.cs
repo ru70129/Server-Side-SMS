@@ -25,6 +25,16 @@ namespace SMS.ViewModels
 
         public bool SelectAll { get; set; }
 
+        public bool IsActive { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public string UpdatedBy { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+
         //public string Email { get; set; }
 
         public StudentViewModel(Student student)
@@ -35,6 +45,11 @@ namespace SMS.ViewModels
             DOB = student.DOB;
             DateOfJoin = student.DateOfJoin;
             KeyId = student.KeyId;
+            IsActive = student.IsActive;
+            CreatedBy = student.CreatedBy;
+            CreatedAt = student.CreatedAt;
+            UpdatedBy = student.UpdatedBy;
+            UpdatedAt = student.UpdatedAt;
 
             //Email = student.Email;
         }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SMS.Services;
@@ -8,28 +8,22 @@ namespace SchoolManagementSystem2.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize]
-    public class StudentsController : Controller
+    public class TeachersController : Controller
     {
-        private IStudentService _studentService;
-        private IGradeService _gradeService;
-        private ISessionService _sectionService;
+        private ITeacherService _teacherService;
 
-        public StudentsController(IStudentService studentService, IGradeService gradeService, ISessionService sectionService)
+        public TeachersController(ITeacherService teacherService)
         {
-            _studentService = studentService;
-            _gradeService = gradeService;
-            _sectionService = sectionService;
+            _teacherService = teacherService;
         }
 
         public IActionResult Index(int pageNumber = 1, int pageSize = 10, string search = null, string sortBy = null, bool isActive = true)
         {
-            ViewBag.Grades = new SelectList(_gradeService.GetAll(), "Id", "Name");
-            ViewBag.sessions = new SelectList(_sectionService.GetAll(), "Id", "Combined");
-            var students = _studentService.GetAll(pageNumber, pageSize, search, sortBy, isActive);
+            var teachers = _teacherService.GetAll(pageNumber, pageSize, search, sortBy, isActive);
             ViewBag.Search = search;
             ViewBag.SortBy = sortBy;
             ViewBag.IsActive = isActive;
-            return View(students);
+            return View(teachers);
         }
 
         [HttpGet]
@@ -40,12 +34,12 @@ namespace SchoolManagementSystem2.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateStudentViewModel vm)
+        public async Task<IActionResult> Create(CreateTeacherViewModel vm)
         {
             if (ModelState.IsValid)
             {
                 vm.CreatedBy = User.Identity.Name ?? "System";
-                await _studentService.AddStudent(vm);
+                await _teacherService.AddTeacher(vm);
                 return RedirectToAction("Index");
             }
             return View(vm);
@@ -54,27 +48,27 @@ namespace SchoolManagementSystem2.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var student = _studentService.GetById(id);
-            if (student == null) return NotFound();
-            return View(student);
+            var teacher = _teacherService.GetById(id);
+            if (teacher == null) return NotFound();
+            return View(teacher);
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var student = _studentService.GetById(id);
-            if (student == null) return NotFound();
-            return View(student);
+            var teacher = _teacherService.GetById(id);
+            if (teacher == null) return NotFound();
+            return View(teacher);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(StudentViewModel vm)
+        public async Task<IActionResult> Edit(TeacherViewModel vm)
         {
             if (ModelState.IsValid)
             {
                 vm.UpdatedBy = User.Identity.Name ?? "System";
-                await _studentService.UpdateStudent(vm);
+                await _teacherService.UpdateTeacher(vm);
                 return RedirectToAction("Index");
             }
             return View(vm);
@@ -84,7 +78,7 @@ namespace SchoolManagementSystem2.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _studentService.DeleteStudent(id);
+            await _teacherService.DeleteTeacher(id);
             return RedirectToAction("Index");
         }
     }

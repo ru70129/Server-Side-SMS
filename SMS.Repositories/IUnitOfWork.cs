@@ -12,5 +12,7 @@ namespace SMS.Repositories
 
         void Save();
 
+        Task SaveAsync();
+
     }
 }

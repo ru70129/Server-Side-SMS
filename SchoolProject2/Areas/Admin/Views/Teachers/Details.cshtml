@@ -1,0 +1,29 @@
+@model TeacherViewModel
+
+@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+<h1>Teacher Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
+        <p class="card-text"><strong>Key ID:</strong> @Model.KeyId</p>
+        <p class="card-text"><strong>Date of Birth:</strong> @Model.DOB.ToShortDateString()</p>
+        <p class="card-text"><strong>Date of Join:</strong> @Model.DateofJoin.ToShortDateString()</p>
+        <p class="card-text"><strong>Qualification:</strong> @Model.Qualification</p>
+        <p class="card-text"><strong>Years of Experience:</strong> @Model.YearOfEx</p>
+        <p class="card-text"><strong>Active:</strong> @(Model.IsActive ? "Yes" : "No")</p>
+        <p class="card-text"><strong>Created By:</strong> @Model.CreatedBy</p>
+        <p class="card-text"><strong>Created At:</strong> @Model.CreatedAt.ToString()</p>
+        @if (Model.UpdatedAt.HasValue)
+        {
+            <p class="card-text"><strong>Updated By:</strong> @Model.UpdatedBy</p>
+            <p class="card-text"><strong>Updated At:</strong> @Model.UpdatedAt.Value.ToString()</p>
+        }
+    </div>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

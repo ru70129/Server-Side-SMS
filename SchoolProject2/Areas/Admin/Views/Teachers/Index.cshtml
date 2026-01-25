@@ -1,10 +1,10 @@
-﻿@model PagedResult<StudentViewModel>
+@model PagedResult<TeacherViewModel>
 
 @{
-    ViewData["Title"] = "Manage Students";
+    ViewData["Title"] = "Manage Teachers";
 }
 
-<h1>Manage Students</h1>
+<h1>Manage Teachers</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
@@ -41,26 +41,26 @@
             <th>Key ID</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Date of Birth</th>
-            <th>Date of Join</th>
+            <th>Qualification</th>
+            <th>Years of Experience</th>
             <th>Active</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var student in Model.Data)
+        @foreach (var teacher in Model.Data)
         {
             <tr>
-                <td>@student.KeyId</td>
-                <td>@student.FirstName</td>
-                <td>@student.LastName</td>
-                <td>@student.DOB.ToShortDateString()</td>
-                <td>@student.DateOfJoin.ToShortDateString()</td>
-                <td>@(student.IsActive ? "Yes" : "No")</td>
+                <td>@teacher.KeyId</td>
+                <td>@teacher.FirstName</td>
+                <td>@teacher.LastName</td>
+                <td>@teacher.Qualification</td>
+                <td>@teacher.YearOfEx</td>
+                <td>@(teacher.IsActive ? "Yes" : "No")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@student.Id" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Edit" asp-route-id="@student.Id" class="btn btn-warning btn-sm">Edit</a>
-                    <form asp-action="Delete" asp-route-id="@student.Id" method="post" style="display:inline;">
+                    <a asp-action="Details" asp-route-id="@teacher.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@teacher.Id" class="btn btn-warning btn-sm">Edit</a>
+                    <form asp-action="Delete" asp-route-id="@teacher.Id" method="post" style="display:inline;">
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                 </td>

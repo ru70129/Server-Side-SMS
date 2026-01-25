@@ -1,0 +1,68 @@
+@model PagedResult<TeacherViewModel>
+
+@{
+    ViewData["Title"] = "Teachers";
+}
+
+<h1>Teachers</h1>
+
+<form method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by name or key" />
+        </div>
+        <div class="col-md-2">
+            <select name="sortBy" class="form-control">
+                <option value="">Sort By</option>
+                <option value="firstname" selected="@(ViewBag.SortBy == "firstname")">First Name</option>
+                <option value="lastname" selected="@(ViewBag.SortBy == "lastname")">Last Name</option>
+                <option value="dob" selected="@(ViewBag.SortBy == "dob")">Date of Birth</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Key ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Qualification</th>
+            <th>Years of Experience</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var teacher in Model.Data)
+        {
+            <tr>
+                <td>@teacher.KeyId</td>
+                <td>@teacher.FirstName</td>
+                <td>@teacher.LastName</td>
+                <td>@teacher.Qualification</td>
+                <td>@teacher.YearOfEx</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@teacher.Id" class="btn btn-info btn-sm">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.TotalItems > Model.PageSize)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @for (int i = 1; i <= (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@i" asp-route-pageSize="@Model.PageSize" asp-route-search="@ViewBag.Search" asp-route-sortBy="@ViewBag.SortBy">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
