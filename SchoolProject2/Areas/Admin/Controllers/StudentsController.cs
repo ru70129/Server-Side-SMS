@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SMS.Services;
 using SMS.ViewModels;
 
 namespace SchoolManagementSystem2.Areas.Admin.Controllers
@@ -6,22 +7,28 @@ namespace SchoolManagementSystem2.Areas.Admin.Controllers
     [Area("Admin")]
     public class StudentsController : Controller
     {
+        private IStudentService _studentService;
+
+        public StudentsController(IStudentService studentService)
+        {
+            _studentService = studentService;
+        }
+
         // GET
-        public IActionResult AddStudent()
+        public IActionResult Index()
         {
             return View();
         }
 
-        // POST
-        [HttpPost]
-        public IActionResult AddStudent(CreateStudentViewModel vm)
+        [HttpGet]
+        public async Task<IActionResult> AddStudent()
         {
-            if (!ModelState.IsValid)
-            {
-                return View(vm);
-            }
-
-            // later the service logic will be here
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddStudent(CreateStudentViewModel vm)
+        {
+            await _studentService.AddStudent(vm);
             return RedirectToAction("Index");
         }
     }
