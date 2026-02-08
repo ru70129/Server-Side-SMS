@@ -30,9 +30,12 @@ namespace SMS.Utilities
         {
             try
             {
-                if (_context.Database.GetPendingMigrations().Count() > 0)
+                if (_context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
                 {
-                    _context.Database.Migrate();
+                    if (_context.Database.GetPendingMigrations().Count() > 0)
+                    {
+                        _context.Database.Migrate();
+                    }
                 }
             }
             catch (Exception)
