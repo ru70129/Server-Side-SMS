@@ -17,14 +17,17 @@ namespace SMS.Services
         private IUnitOfWork _unitOfWork;
         private UserManager<ApplicationUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+        private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
         public StudentService(IUnitOfWork unitOfWork,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task AddStudent(CreateStudentViewModel vm)
@@ -36,6 +39,7 @@ namespace SMS.Services
                 DOB = vm.DOB,
                 DateOfJoin = vm.DateOfJoin,
                 KeyId = vm.KeyId,
+                AllowedRoles = vm.AllowedRoles,
                 IsActive = true,
                 CreatedBy = vm.CreatedBy,
                 CreatedAt = DateTime.Now
@@ -69,6 +73,7 @@ namespace SMS.Services
             student.DOB = vm.DOB;
             student.DateOfJoin = vm.DateOfJoin;
             student.KeyId = vm.KeyId;
+            student.AllowedRoles = vm.AllowedRoles;
             student.UpdatedBy = vm.UpdatedBy;
             student.UpdatedAt = DateTime.Now;
 
@@ -115,7 +120,21 @@ namespace SMS.Services
         public StudentViewModel GetById(int id)
         {
             var student = _unitOfWork.GenericRepository<Student>().GetById(id);
-            return student == null ? null : new StudentViewModel(student);
+            if (student == null) return null;
+
+            // Check AllowedRoles visibility
+            var http = _httpContextAccessor?.HttpContext;
+            if (!string.IsNullOrEmpty(student.AllowedRoles) && http != null)
+            {
+                var roles = student.AllowedRoles.Split(',').Select(r => r.Trim());
+                var authorized = roles.Any(r => http.User?.IsInRole(r) == true);
+                if (!authorized && !(http.User?.Identity?.IsAuthenticated == true))
+                {
+                    return null; // Hide from unauthorized users
+                }
+            }
+
+            return new StudentViewModel(student);
         }
 
         public PagedResult<StudentViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true)

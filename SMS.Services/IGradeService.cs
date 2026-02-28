@@ -19,6 +19,8 @@ namespace SMS.Services
         IEnumerable<GradeViewModel> GetAll();
 
         GradeViewModel GetById(int gradeId);
+        Task Update(GradeViewModel vm);
+        Task Delete(int id, string deletedBy = "System");
     }
 
 }

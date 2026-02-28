@@ -110,7 +110,7 @@ namespace SMS.Services
             return subject == null ? null : new SubjectViewModel(subject);
         }
 
-        public PagedResult<SubjectViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true)
+        public PagedResult<SubjectViewModel> GetAll(int pageNumber, int pageSize, string? search = null, string? sortBy = null, bool isActive = true)
         {
             int totalCount = 0;
             List<SubjectViewModel> vmList = new List<SubjectViewModel>();
@@ -144,7 +144,7 @@ namespace SMS.Services
                 var modelList = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
                 vmList = ConvertModelToViewModelList(modelList);
             }
-            catch (Exception ex) { throw; }
+            catch { throw; }
             var result = new PagedResult<SubjectViewModel>
             {
                 Data = vmList,

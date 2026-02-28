@@ -17,11 +17,70 @@ namespace SMS.Services
         {
             _unitOfWork = unitOfWork;
         }
+        public async Task Update(SessionViewModel vm)
+        {
+            var session = _unitOfWork.GenericRepository<Session>().GetById(vm.Id);
+            if (session == null) return;
+
+            var oldValues = System.Text.Json.JsonSerializer.Serialize(session);
+
+            session.Start = vm.Start;
+            session.End = vm.End;
+            // no UpdatedBy on session model currently; if needed add fields
+
+            _unitOfWork.GenericRepository<Session>().Update(session);
+            await _unitOfWork.SaveAsync();
+
+            var audit = new AuditLog
+            {
+                Action = "UPDATE",
+                EntityName = "Session",
+                EntityId = session.Id,
+                OldValues = oldValues,
+                NewValues = System.Text.Json.JsonSerializer.Serialize(session),
+                UserId = vm.UpdatedBy
+            };
+            _unitOfWork.GenericRepository<AuditLog>().Add(audit);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task Delete(int id, string deletedBy = "System")
+        {
+            var session = _unitOfWork.GenericRepository<Session>().GetById(id);
+            if (session == null) return;
+
+            var oldValues = System.Text.Json.JsonSerializer.Serialize(session);
+
+            _unitOfWork.GenericRepository<Session>().Delete(session);
+            await _unitOfWork.SaveAsync();
+
+            var audit = new AuditLog
+            {
+                Action = "DELETE",
+                EntityName = "Session",
+                EntityId = id,
+                OldValues = oldValues,
+                UserId = deletedBy
+            };
+            _unitOfWork.GenericRepository<AuditLog>().Add(audit);
+            await _unitOfWork.SaveAsync();
+        }
         public async Task Add(CreateSessionViewModel vm)
         {
             var model = new CreateSessionViewModel().Convert(vm);
             await _unitOfWork.GenericRepository<Session>().AddAsync(model);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
+            var audit = new AuditLog
+            {
+                Action = "CREATE",
+                EntityName = "Session",
+                EntityId = model.Id,
+                NewValues = System.Text.Json.JsonSerializer.Serialize(model),
+                UserId = vm.CreatedBy
+            };
+            _unitOfWork.GenericRepository<AuditLog>().Add(audit);
+            await _unitOfWork.SaveAsync();
         }
         public PagedResult<SessionViewModel> GetAll(int pageNumber, int pageSize)
         {

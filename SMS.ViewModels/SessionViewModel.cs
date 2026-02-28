@@ -13,6 +13,7 @@ namespace SMS.ViewModels
         public string Start { get; set; } //2022-2023
         public string End { get; set; }
         public List<GradeViewModel> gradeViewModels { get; set; }
+        public string UpdatedBy { get; set; }
         public string Combined
         {
             get
@@ -25,6 +26,7 @@ namespace SMS.ViewModels
             Id = model.Id;
             Start = model.Start;
             End = model.End;
+            // Session model has no CreatedBy/Updated fields; can be extended if needed
         }
         public SessionViewModel()
         {

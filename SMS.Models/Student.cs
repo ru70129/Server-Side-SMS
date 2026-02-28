@@ -46,6 +46,8 @@ namespace SMS.Models
         public DateTime? UpdatedAt { get; set; }
 
         public ICollection<Enroll> YearlySession { get; set; }
-
+        
+        // Comma-separated roles allowed to view/update this item (e.g., "Admin,User")
+        public string AllowedRoles { get; set; }
     }
 }

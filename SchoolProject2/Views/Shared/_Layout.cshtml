@@ -51,6 +51,13 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2026 - SchoolProject2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            @{
+                var last = Context.Session.GetString("LastVisit");
+                if (!string.IsNullOrEmpty(last))
+                {
+                    <span class="float-end">Last visit: @last</span>
+                }
+            }
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

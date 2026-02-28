@@ -30,6 +30,11 @@ namespace SMS.ViewModels
 
         public int YearOfEx { get; set; }
 
+        /// <summary>
+        /// Roles permitted to see/update this teacher record
+        /// </summary>
+        public string AllowedRoles { get; set; }
+
         public string CreatedBy { get; set; }
     }
 }

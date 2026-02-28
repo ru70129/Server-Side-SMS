@@ -38,6 +38,11 @@ namespace SMS.ViewModels
 
         public string Password { get; set; }
 
+        /// <summary>
+        /// Comma-separated list of roles allowed to view/update the student (Admin,User,...)
+        /// </summary>
+        public string AllowedRoles { get; set; }
+
         public string CreatedBy { get; set; }
 
         public Student ConvertModel(CreateStudentViewModel student)

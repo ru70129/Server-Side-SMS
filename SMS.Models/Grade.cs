@@ -11,6 +11,13 @@ namespace SMS.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool IsActive { get; set; } = true;
+
+        public string CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public string UpdatedBy { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         [NotMapped]
         public ICollection<AssignGrade> AssignGrade { get; set; } = new HashSet<AssignGrade>();
 

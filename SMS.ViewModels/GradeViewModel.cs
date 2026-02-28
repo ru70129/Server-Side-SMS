@@ -11,6 +11,11 @@ namespace SMS.ViewModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string UpdatedBy { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public GradeViewModel()
         {
         }
@@ -18,6 +23,11 @@ namespace SMS.ViewModels
         {
             Id = grade.Id;
             Name = grade.Name;
+            IsActive = grade.IsActive;
+            CreatedBy = grade.CreatedBy;
+            CreatedAt = grade.CreatedAt;
+            UpdatedBy = grade.UpdatedBy;
+            UpdatedAt = grade.UpdatedAt;
         }
 
         //private List<SessionViewModel> ConvertModelToViewModelList(List<YearlySession> modelList);
@@ -27,7 +37,7 @@ namespace SMS.ViewModels
 
         public Grade Convert(GradeViewModel grade)
         {
-            return new Grade { Id = this.Id, Name = this.Name };
+            return new Grade { Id = this.Id, Name = this.Name, CreatedBy = this.CreatedBy, CreatedAt = this.CreatedAt, UpdatedBy = this.UpdatedBy, UpdatedAt = this.UpdatedAt, IsActive = this.IsActive };
         }
     }
 }

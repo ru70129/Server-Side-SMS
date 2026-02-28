@@ -14,6 +14,7 @@ namespace SMS.Services.Tests
         private Mock<IUnitOfWork> _unitOfWorkMock;
         private Mock<UserManager<ApplicationUser>> _userManagerMock;
         private Mock<RoleManager<IdentityRole>> _roleManagerMock;
+        private Mock<Microsoft.AspNetCore.Http.IHttpContextAccessor> _httpContextAccessorMock;
         private StudentService _studentService;
 
         public StudentServiceTests()
@@ -21,7 +22,8 @@ namespace SMS.Services.Tests
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>();
             _roleManagerMock = new Mock<RoleManager<IdentityRole>>();
-            _studentService = new StudentService(_unitOfWorkMock.Object, _userManagerMock.Object, _roleManagerMock.Object);
+            _httpContextAccessorMock = new Mock<Microsoft.AspNetCore.Http.IHttpContextAccessor>();
+            _studentService = new StudentService(_unitOfWorkMock.Object, _userManagerMock.Object, _roleManagerMock.Object, _httpContextAccessorMock.Object);
         }
 
         [Fact]

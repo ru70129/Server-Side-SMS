@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SMS.Services;
 using SMS.Utilities;
 using SMS.ViewModels;
@@ -6,6 +7,7 @@ using SMS.ViewModels;
 namespace SchoolManagementSystem2.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class GradesController : Controller
     {
         private IGradeService _gradeService;

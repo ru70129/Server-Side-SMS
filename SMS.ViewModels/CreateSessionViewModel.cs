@@ -11,6 +11,9 @@ namespace SMS.ViewModels
     {
         public string Start { get; set; }
         public string End { get; set; }
+        public string CreatedBy { get; set; }
+
+        public string UpdatedBy { get; set; }
 
         public Session Convert(CreateSessionViewModel vm)
         { 

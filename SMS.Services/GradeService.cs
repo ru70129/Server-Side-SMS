@@ -24,7 +24,19 @@ namespace SMS.Services
         {
             var model = new CreateGradeViewModel().Convert(vm);
             await _unitOfWork.GenericRepository<Grade>().AddAsync(model);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
+
+            // Audit log
+            var audit = new AuditLog
+            {
+                Action = "CREATE",
+                EntityName = "Grade",
+                EntityId = model.Id,
+                NewValues = System.Text.Json.JsonSerializer.Serialize(model),
+                UserId = vm.CreatedBy
+            };
+            _unitOfWork.GenericRepository<AuditLog>().Add(audit);
+            await _unitOfWork.SaveAsync();
         }
 
         public int AddGradeWithStudent(GradeViewModel grade, int sessionId, List<int> StudentList)
@@ -47,6 +59,55 @@ namespace SMS.Services
                 }
              }
             return count;
+        }
+
+        public async Task Update(GradeViewModel vm)
+        {
+            var grade = _unitOfWork.GenericRepository<Grade>().GetById(vm.Id);
+            if (grade == null) return;
+
+            var oldValues = System.Text.Json.JsonSerializer.Serialize(grade);
+
+            grade.Name = vm.Name;
+            grade.UpdatedBy = vm.UpdatedBy;
+            grade.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GenericRepository<Grade>().Update(grade);
+            await _unitOfWork.SaveAsync();
+
+            var audit = new AuditLog
+            {
+                Action = "UPDATE",
+                EntityName = "Grade",
+                EntityId = grade.Id,
+                OldValues = oldValues,
+                NewValues = System.Text.Json.JsonSerializer.Serialize(grade),
+                UserId = vm.UpdatedBy
+            };
+            _unitOfWork.GenericRepository<AuditLog>().Add(audit);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task Delete(int id, string deletedBy = "System")
+        {
+            var grade = _unitOfWork.GenericRepository<Grade>().GetById(id);
+            if (grade == null) return;
+
+            var oldValues = System.Text.Json.JsonSerializer.Serialize(grade);
+
+            _unitOfWork.GenericRepository<Grade>().Delete(grade);
+            await _unitOfWork.SaveAsync();
+
+            var audit = new AuditLog
+            {
+                Action = "DELETE",
+                EntityName = "Grade",
+                EntityId = id,
+                OldValues = oldValues,
+                UserId = deletedBy
+            };
+            _unitOfWork.GenericRepository<AuditLog>().Add(audit);
+            await _unitOfWork.SaveAsync();
         }
 
         public PagedResult<GradeViewModel> GetAll(int pageNumber, int pageSize)

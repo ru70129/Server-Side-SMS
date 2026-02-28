@@ -14,5 +14,7 @@ namespace SMS.Services
         PagedResult<SessionViewModel> GetAll(int pageNumber, int pageSize);
         IEnumerable<SessionViewModel> GetAll();
         SessionViewModel GetById(int sessionId);
+        Task Update(SessionViewModel vm);
+        Task Delete(int id, string deletedBy = "System");
     }
 }

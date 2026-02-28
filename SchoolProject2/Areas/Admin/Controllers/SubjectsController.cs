@@ -6,7 +6,7 @@ using SMS.ViewModels;
 namespace SchoolManagementSystem2.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class SubjectsController : Controller
     {
         private ISubjectService _subjectService;
@@ -64,19 +64,35 @@ namespace SchoolManagementSystem2.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SubjectViewModel vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(vm);
+
+            var subjectExisting = _subjectService.GetById(vm.Id);
+            if (subjectExisting == null) return NotFound();
+
+            var currentUser = User.Identity?.Name ?? "System";
+            if (!User.IsInRole("Admin") && !string.Equals(subjectExisting.CreatedBy, currentUser, StringComparison.OrdinalIgnoreCase))
             {
-                vm.UpdatedBy = User.Identity.Name ?? "System";
-                await _subjectService.UpdateSubject(vm);
-                return RedirectToAction("Index");
+                return Forbid();
             }
-            return View(vm);
+
+            vm.UpdatedBy = currentUser;
+            await _subjectService.UpdateSubject(vm);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
+            var existing = _subjectService.GetById(id);
+            if (existing == null) return NotFound();
+
+            var currentUser = User.Identity?.Name ?? "System";
+            if (!User.IsInRole("Admin") && !string.Equals(existing.CreatedBy, currentUser, StringComparison.OrdinalIgnoreCase))
+            {
+                return Forbid();
+            }
+
             await _subjectService.DeleteSubject(id);
             return RedirectToAction("Index");
         }

@@ -17,14 +17,17 @@ namespace SMS.Services
         private IUnitOfWork _unitOfWork;
         private UserManager<ApplicationUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+    private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
         public TeacherService(IUnitOfWork unitOfWork,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task AddTeacher(CreateTeacherViewModel vm)
@@ -40,7 +43,8 @@ namespace SMS.Services
                 YearOfEx = vm.YearOfEx,
                 IsActive = true,
                 CreatedBy = vm.CreatedBy,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                AllowedRoles = vm.AllowedRoles
             };
 
             _unitOfWork.GenericRepository<Teacher>().Add(teacher);
@@ -73,6 +77,7 @@ namespace SMS.Services
             teacher.KeyId = vm.KeyId;
             teacher.Qualification = vm.Qualification;
             teacher.YearOfEx = vm.YearOfEx;
+            teacher.AllowedRoles = vm.AllowedRoles;
             teacher.UpdatedBy = vm.UpdatedBy;
             teacher.UpdatedAt = DateTime.Now;
 
@@ -116,13 +121,27 @@ namespace SMS.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public TeacherViewModel GetById(int id)
+        public TeacherViewModel? GetById(int id)
         {
             var teacher = _unitOfWork.GenericRepository<Teacher>().GetById(id);
-            return teacher == null ? null : new TeacherViewModel(teacher);
+            if (teacher == null) return null;
+
+            // visibility check similar to StudentService
+            var http = _httpContextAccessor?.HttpContext;
+            if (!string.IsNullOrEmpty(teacher.AllowedRoles) && http != null)
+            {
+                var roles = teacher.AllowedRoles.Split(',').Select(r => r.Trim());
+                var authorized = roles.Any(r => http.User?.IsInRole(r) == true);
+                if (!authorized && !(http.User?.Identity?.IsAuthenticated == true))
+                {
+                    return null;
+                }
+            }
+
+            return new TeacherViewModel(teacher);
         }
 
-        public PagedResult<TeacherViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true)
+        public PagedResult<TeacherViewModel> GetAll(int pageNumber, int pageSize, string? search = null, string? sortBy = null, bool isActive = true)
         {
             int totalCount = 0;
             List<TeacherViewModel> vmList = new List<TeacherViewModel>();
@@ -162,7 +181,7 @@ namespace SMS.Services
                 var modelList = query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
                 vmList = ConvertModelToViewModelList(modelList);
             }
-            catch (Exception ex) { throw; }
+            catch { throw; }
             var result = new PagedResult<TeacherViewModel>
             {
                 Data = vmList,

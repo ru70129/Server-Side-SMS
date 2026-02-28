@@ -43,6 +43,11 @@
         <input asp-for="YearOfEx" class="form-control" type="number" />
         <span asp-validation-for="YearOfEx" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="AllowedRoles"></label>
+        <input asp-for="AllowedRoles" class="form-control" placeholder="e.g. Admin,User" />
+        <span asp-validation-for="AllowedRoles" class="text-danger"></span>
+    </div>
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>

@@ -9,8 +9,8 @@ namespace SMS.Services
         Task AddSubject(CreateSubjectViewModel subject);
         Task UpdateSubject(SubjectViewModel subject);
         Task DeleteSubject(int id);
-        SubjectViewModel GetById(int id);
-        PagedResult<SubjectViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true);
+        SubjectViewModel? GetById(int id);
+        PagedResult<SubjectViewModel> GetAll(int pageNumber, int pageSize, string? search = null, string? sortBy = null, bool isActive = true);
         int GetAllSubjects();
     }
 }

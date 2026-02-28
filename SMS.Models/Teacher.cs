@@ -53,5 +53,7 @@ namespace SMS.Models
 
         public ICollection<TeacherSession> TeacherSessions { get; set; }
 
+        // roles permitted to view/update
+        public string AllowedRoles { get; set; }
     }
 }

@@ -35,6 +35,11 @@ namespace SMS.ViewModels
 
         public DateTime? UpdatedAt { get; set; }
 
+        /// <summary>
+        /// Comma-separated roles allowed to view/update
+        /// </summary>
+        public string AllowedRoles { get; set; }
+
         //public string Email { get; set; }
 
         public StudentViewModel(Student student)
@@ -50,6 +55,7 @@ namespace SMS.ViewModels
             CreatedAt = student.CreatedAt;
             UpdatedBy = student.UpdatedBy;
             UpdatedAt = student.UpdatedAt;
+            AllowedRoles = student.AllowedRoles;
 
             //Email = student.Email;
         }

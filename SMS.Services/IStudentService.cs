@@ -9,8 +9,8 @@ namespace SMS.Services
         Task AddStudent(CreateStudentViewModel student);
         Task UpdateStudent(StudentViewModel student);
         Task DeleteStudent(int id);
-        StudentViewModel GetById(int id);
-        PagedResult<StudentViewModel> GetAll(int pageNumber, int pageSize, string search = null, string sortBy = null, bool isActive = true);
+        StudentViewModel? GetById(int id);
+        PagedResult<StudentViewModel> GetAll(int pageNumber, int pageSize, string? search = null, string? sortBy = null, bool isActive = true);
         int GetAllStudents();
     }
 }
